@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  server:
+    build:
+      context: ./
+      dockerfile: server/Dockerfile
+    ports:
+      - "12345:12345"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  portfolio_service:
+    build:
+      context: ./
+      dockerfile: portfolio_service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  stake_service:
+    build:
+      context: ./
+      dockerfile: stake_service/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  swap_service:
+    build:
+      context: ./
+      dockerfile: swap_service/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  transfer_service:
+    build:
+      context: ./
+      dockerfile: transfer_service/Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
