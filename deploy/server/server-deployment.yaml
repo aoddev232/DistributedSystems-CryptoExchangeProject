@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+  labels:
+    app: server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: server
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+      - name: server
+        image: python-distributed-systems-server:latest  # Replace with your actual image path
+        ports:
+        - containerPort: 12345
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongo:27017/mydatabase"
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          httpGet:
+            path: /health  # Adjust if there's a specific health check endpoint
+            port: 12345
+        livenessProbe:
+          httpGet:
+            path: /health  # Adjust if there's a specific health check endpoint
+            port: 12345
+      restartPolicy: Always

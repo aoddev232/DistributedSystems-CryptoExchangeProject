@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stake-service-deployment
+  labels:
+    app: stake-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stake-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: stake-service
+    spec:
+      containers:
+      - name: stake-service
+        image: python-distributed-systems-stake_service:latest  # Replace with your actual image path
+        ports:
+        - containerPort: 8082
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongo:27017/mydatabase"
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          httpGet:
+            path: /health  # Adjust if there's a specific health check endpoint
+            port: 8082
+        livenessProbe:
+          httpGet:
+            path: /health  # Adjust if there's a specific health check endpoint
+            port: 8082
+      restartPolicy: Always
