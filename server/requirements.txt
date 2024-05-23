@@ -1,0 +1,6 @@
+flask
+pymongo
+werkzeug
+requests
+gunicorn
+flasgger
